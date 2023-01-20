@@ -1,0 +1,43 @@
+version: '3.7'
+
+services:
+  auth:
+    container_name: auth
+    build:
+      context: .
+      target: development
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - 4040:4040
+    command: npm run start:dev
+    environment:
+      NODE_ENV: development
+    env_file:
+      - .env
+    depends_on:
+      - rabbitmq
+      - mongodb
+  mongodb:
+    image: mongo:5.0.2
+    restart: unless-stopped
+    env_file: ./.env
+    ports:
+      - 27017:27107
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
+  rabbitmq:
+    image: rabbitmq:3.8-management-alpine
+    container_name: 'rabbitmq'
+    ports:
+        - 5673:5672
+        - 15673:15672
+    env_file:
+      - ./rabbitmq.env
+    # volumes:
+    #   - rabbitmq:/var/lib/rabbitmq/mnesia
+    #   - rabbitmq/log/:/var/log/rabbitmq/mnesia
+    # networks:
+    #     - rabbitmq_nodejs
