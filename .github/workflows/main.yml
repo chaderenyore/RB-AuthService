@@ -3,7 +3,7 @@ name: Services
 on:
   push:
     branches:
-      - dev
+      - develop
   # pull_request:
   #   branches:
   #     - test
