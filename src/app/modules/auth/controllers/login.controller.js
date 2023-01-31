@@ -10,7 +10,7 @@ const {
   jwtDecode,
 } = require("../../../../_helpers/jwtUtil");
 const AuthService = require("../services/auth.services");
-// const AccessLogsService = require("../../accessLogs/services/accessLogs.services");
+const AccessLogsService = require("../../accessLogs/services/accessLogs.services");
 const { rollback } = require("../../../../_helpers/rollbackSave");
 const logger = require("../../../../../logger.conf");
 exports.login = async (req, res, next) => {
