@@ -3,7 +3,7 @@ const {TYPE} = require ('../../_constants/record.type');
 const { RESPONSE } = require("../../_constants/response");
 const createError = require("../../_helpers/createError");
 const { jwtVerify } = require("../../_helpers/jwtUtil");
-const AuthService = require('../modules/main/services/auth.services');
+// const AuthService = require('../modules/main/services/auth.services');
 const logger = require("../../../logger.conf");
 
 exports.authorize = (role = []) => {

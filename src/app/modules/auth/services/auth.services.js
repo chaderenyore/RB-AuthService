@@ -1,7 +1,7 @@
 const loginRepository = require("../repository/login.repository");
 const SecurityRepository = require("../repository/login.repository");
 const TokenRepository = require("../repository/token.repository");
-const { message } = require("../../../../_constants/service.message");
+// const { message } = require("../../../../_constants/service.message");
 const { TYPE } = require("../../../../_constants/record.type");
 
 class AuthService {
