@@ -45,6 +45,9 @@ const apiRouter = express.Router();
 apiRouter.use(routes());
 const apiURL = `/auth/${KEYS.appVersion}`;
 app.use(apiURL, apiRouter);
+app.use(apiURL, (req, res, next)=> {
+  res.json({data: null})
+});
 // handler for route-not-found
 apiRouter.use((_req, _res, next) => {
   next(

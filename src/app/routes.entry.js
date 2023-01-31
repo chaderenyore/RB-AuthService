@@ -10,7 +10,7 @@ module.exports = () => {
   
   const router = Router();
 
-//   router.use("/user", Auth);
+  router.use("/user", Auth);
 //   router.use("/password", Password);
 //   router.use("/account", AccountVerification);
 
