@@ -5,7 +5,7 @@ const { jwtDecode } = require("../../../../_helpers/jwtUtil");
 const {TYPE} = require ('../../../../_constants/record.type');
 const { createResponse } = require('../../../../_helpers/createResponse');
 const AuthService = require('../services/auth.services');
-// const AccessLogService = require('../../accessLogs/services/accessLogs.services');
+const AccessLogService = require('../../accessLogs/services/accessLogs.services');
 const logger = require("../../../../../logger.conf");
 
 
