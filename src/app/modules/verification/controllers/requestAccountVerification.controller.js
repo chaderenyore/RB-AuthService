@@ -70,15 +70,7 @@ exports.requestAccountVerification = async (req, res, next) => {
           token: token,
         };
 
-        await axios.post(
-          `${KEYS.notificationUri}/notifications/v1/user/request-account-verification`,
-          Data,
-          {
-            headers: {
-              Authorization: `Bearer ${req.token}`,
-            },
-          }
-        );
+        // Publish to Account verification queue queue
         const resData = {
           channel: req.body.channel,
           channel_value: req.body.channel_value,

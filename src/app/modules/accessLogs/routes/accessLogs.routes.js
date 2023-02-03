@@ -19,7 +19,7 @@ router.get(
 router.get(
   "/user-logs",
   authorizeAdmin(["super","admin", "reviewer", "editor"]),
-  validateRequest(getUsersAccessLogsSchema.getAllUsersAccessLogsSchema, "params"),
+  validateRequest(getUsersAccessLogsSchema.getAllUsersAccessLogsSchema, "query"),
   getUsersAccessLogsController.getAllAccesLogs
 );
 
