@@ -25,7 +25,7 @@ exports.login = async (req, res, next) => {
         createError(HTTP.UNAUTHORIZED, [
           {
             status: RESPONSE.ERROR,
-            message: "User does not exist",
+            message: "User Does Not Exist",
             statusCode: HTTP.SERVER_ERROR,
             data: null,
             code: HTTP.UNAUTHORIZED,
@@ -39,7 +39,7 @@ exports.login = async (req, res, next) => {
         createError(HTTP.UNAUTHORIZED, [
           {
             status: RESPONSE.ERROR,
-            message: "You are not authorized to login",
+            message: "You Are Not Authorized To Login",
             statusCode: HTTP.SERVER_ERROR,
             data: null,
             code: HTTP.UNAUTHORIZED,
@@ -72,7 +72,7 @@ exports.login = async (req, res, next) => {
           createError(HTTP.UNAUTHORIZED, [
             {
               status: RESPONSE.ERROR,
-              message: "Invalid password",
+              message: "Invalid Password",
               statusCode: HTTP.SERVER_ERROR,
               data: null,
               code: HTTP.UNAUTHORIZED,

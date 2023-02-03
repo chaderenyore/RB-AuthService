@@ -10,7 +10,7 @@ const KEYS = require("./_config/keys");
 const createError = require("./_helpers/createError");
 const { RESPONSE } = require("./_constants/response");
 const { HTTP } = require("./_constants/http");
-// const { requestLogger } = require("./middlewares/requestLogger");
+const { requestLogger } = require("./app/middlewares/requestLogger");
 
 const app = express();
 // app.use(enforce.HTTPS({ trustProtoHeader: true })) // Force HTTPS connection (Does not work locally)
@@ -24,7 +24,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(compression());
 app.use(morgan("dev"));
-// app.use(requestLogger)
+app.use(requestLogger)
 
 app.use(function (_err, _req, _res, _) {
 
