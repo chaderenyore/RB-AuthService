@@ -83,11 +83,11 @@ exports.signUp = async (req, res, next) => {
         last_name: req.body.last_name || " ",
         image_url: req.body.image_url,
         auth_type: req.body.auth_type || "lc",
-        user_type: req.body.type,
+        user_type: req.body.user_type,
       };
       console.log(">>>>>> dataToUserService", dataToUserService); 
       const user = await axios.post(
-        `${KEYS.userUri}/users/v1/create?platform=web`,
+        `${KEYS.USER_SERVICE_URI}/users/v1/create?platform=web`,
         dataToUserService
       );
       console.log("USER ================== ", user)
