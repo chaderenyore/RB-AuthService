@@ -7,8 +7,7 @@ const createError = require("../../../../_helpers/createError");
 const { CHANNELS } = require("../../../../_constants/channels");
 const { generateTokenAndStore } = require("../../../../_helpers/generateOtp");
 const { createResponse } = require("../../../../_helpers/createResponse");
-const AuthService = require("../services/auth.services");
-const { rollback } = require("../../../../_helpers/rollbackSave");
+const AuthService = require("../../auth/services/auth.services");
 const logger = require("../../../../../logger.conf");
 
 exports.requestAccountVerification = async (req, res, next) => {
@@ -69,7 +68,15 @@ exports.requestAccountVerification = async (req, res, next) => {
           email: user.email,
           token: token,
         };
-
+        const mail = await axios.post(
+          `${KEYS.notificationUri}/notifications/v1/user/request-account-verification`,
+          Data,
+          {
+            headers: {
+              Authorization: `Bearer ${req.token}`,
+            },
+          }
+        );
         // Publish to Account verification queue queue
         const resData = {
           channel: req.body.channel,

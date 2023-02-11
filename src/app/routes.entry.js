@@ -14,7 +14,7 @@ module.exports = () => {
   router.use("/user", Auth);
   router.use("/user-logs", AccessLogs);
   router.use("/password", Password);
-//   router.use("/account", AccountVerification);
+  router.use("/account", AccountVerification);
 
   return router;
 };
