@@ -20,6 +20,7 @@ exports.login = async (req, res, next) => {
       { email: req.body.email },
       TYPE.LOGIN
     );
+    console.log("USER =================== ", user)
     if (!user) {
       return next(
         createError(HTTP.UNAUTHORIZED, [
@@ -48,19 +49,19 @@ exports.login = async (req, res, next) => {
       );
     }
 
-    // if (user && user.is_verified === false) {
-    //   return next(
-    //     createError(HTTP.UNAUTHORIZED, [
-    //       {
-    //         status: RESPONSE.ERROR,
-    //         message: "Your Account Has Not Been Verified",
-    //         statusCode: HTTP.SERVER_ERROR,
-    //         data: null,
-    //         code: HTTP.UNAUTHORIZED,
-    //       },
-    //     ])
-    //   );
-    // }
+    if (user && user.is_verified === false) {
+      return next(
+        createError(HTTP.UNAUTHORIZED, [
+          {
+            status: RESPONSE.ERROR,
+            message: "Your Account Has Not Been Verified",
+            statusCode: HTTP.SERVER_ERROR,
+            data: null,
+            code: HTTP.UNAUTHORIZED,
+          },
+        ])
+      );
+    }
     // create token and login
     if (req.body.password) {
       const passwordMatch = await comparePassword(

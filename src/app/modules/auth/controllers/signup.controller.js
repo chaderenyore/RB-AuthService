@@ -18,7 +18,6 @@ exports.signUp = async (req, res, next) => {
     let password;
     const email = req.body.email && req.body.email.toLowerCase();
     // check if usr exists
-    // logger.log("EMAIL: ", email)
     const isUser = await new AuthService().findARecord({ email }, TYPE.LOGIN);
     const phoneNumberExists = await new AuthService().findARecord(
       { phone_number: req.body.phone_number },
@@ -90,11 +89,15 @@ exports.signUp = async (req, res, next) => {
         `${KEYS.USER_SERVICE_URI}/users/v1/create?platform=web`,
         dataToUserService
       );
-      console.log("USER ================== ", user)
+      // console.log("USER ================== ", user)
+      console.log("USER ================== ", user.data)
+      console.log("USER ================== ", user.data.data)
+      console.log("USER ================== ", user.data.data._id)
       if(user && user.data && user.data.code === 200){     
         let user_id = user.data.data._id;
         // sign jwt
         const token = jwtSign(user_id);
+        console.log("NEW SIGNED TOKEN ================= ". token)
         const { iat } = jwtDecode(token) || {};
         // create login record
         const loginData = {
@@ -104,7 +107,7 @@ exports.signUp = async (req, res, next) => {
           email: req.body.email,
           auth_type: req.body.auth_type,
           user_id: user.data.data._id,
-          user_type: req.body.type,
+          user_type: req.body.user_type,
           is_loggedIn: true,
           access_token: token,
           password,

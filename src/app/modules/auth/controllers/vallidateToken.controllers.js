@@ -6,6 +6,7 @@ const VallidateService  = require('../services/vallidate.service');
 
 exports.validate = async (req, res, next) => {
   try {
+    console.log("headers ================ ", req.headers)
     // check for token record
     const { error, message, data} = await new VallidateService().vallidateToken(req.user, req.token)
     if (error) {
