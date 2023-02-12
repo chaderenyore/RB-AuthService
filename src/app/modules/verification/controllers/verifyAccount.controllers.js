@@ -61,7 +61,7 @@ exports.verifyUserAccount = async (req, res, next) => {
         email: user.email,
       };
      const mail = await axios.post(
-        `${KEYS.notificationUri}/notifications/v1/user/welcome-mail`,
+        `${KEYS.NOTIFICATION_URI}/notifications/v1/user/welcome-mail`,
         Data,
         {
           headers: {
