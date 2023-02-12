@@ -16,26 +16,26 @@ const ResetPasswordController = require("../controllers/resetPassword.controller
 const router = Router();
 
 router.put(
-    "/password/change",
+    "/change",
     authorize(['user','minder', 'admin']),
     validateRequest(changePassword.changePasswordSchema, "body"),
     ChangePasswordController.changePasswordController
   );
 
 router.post(
-  "/password/request-reset",
+  "/request-reset",
   validateRequest(RequestResetPassword.requestResetSchema, "body"),
   RequestResetPasswordController.requestPasswordResetController
 );
 
 router.post(
-  "/password/validate-token",
+  "/validate-token",
   validateRequest(ValidatePasswordToken.validateTokenSchema, "body"),
   ValidatePasswordTokenController.validatePasswordTokenController
 );
 
 router.post(
-    "/password/reset",
+    "/reset",
     validateRequest(ResetPassword.resetUserPasswordSchema, "body"),
     ResetPasswordController.resetUserPasswordController
   );
