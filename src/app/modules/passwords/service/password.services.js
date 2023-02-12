@@ -43,7 +43,7 @@ class PasswordService {
           token: token,
         };
         await axios.post (
-          `${KEYS.notificationUri}/notifications/v1/user/request-password-reset`,
+          `${KEYS.NOTIFICATION_URI}/notifications/v1/user/request-password-reset`,
           Data
         );
         return {
@@ -152,6 +152,10 @@ class PasswordService {
             first_name: user.username,
             email: user.email,
           };
+          await axios.post (
+            `${KEYS.NOTIFICATION_URI}/notifications/v1/user/password-reset-successful`,
+            Data
+          );
       // publish to queue TODO::::::======
           return {
             error: false,
