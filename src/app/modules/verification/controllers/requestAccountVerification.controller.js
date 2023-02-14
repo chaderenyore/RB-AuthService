@@ -64,11 +64,11 @@ exports.requestAccountVerification = async (req, res, next) => {
       // call notification service based on channel and user
       if (req.body.channel === "email" || req.body.channel === "phone_number") {
         // send mail or publish to queue TODO:::
-        console.log("USER BEEN VERIFIED =================== ", user)
         const Data = {
           first_name: user.first_name ? user.first_name : user.username,
           email: user.email,
           token: token,
+          link:`${KEYS.BASE_URL}/auth/v1/account/verify-link?token=${req.token}&platform=web`
         };
         const mail = await axios.post(
           `${KEYS.NOTIFICATION_URI}/notifications/v1/user/request-account-verification`,

@@ -7,4 +7,5 @@ exports.requestAccountVerificationSchema = Joi.object({
       .valid('email', 'phone_number')
       .required(),
     channel_value: Joi.string().trim().required(),
+    link:Joi.string().optional()
   });

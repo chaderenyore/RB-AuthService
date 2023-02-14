@@ -5,7 +5,7 @@ exports.registerUserSchema = Joi.object().keys({
   phone_number: Joi.string()
     .pattern(/^\+[0-9]+$/)
     .trim()
-    .required()
+    .optional()
     .label("Phone number"),
   password: Joi.string().when("auth_type", {
     not: Joi.exist(),
@@ -24,13 +24,7 @@ exports.registerUserSchema = Joi.object().keys({
     .utc()
     .optional(),
   username: Joi.string()
-    .trim()
-    .when("email", {
-      not: Joi.exist(),
-      then: Joi.required(),
-      otherwise: Joi.optional(),
-    })
-    .label("username or email"),
+    .trim().required(),
   name: Joi.string().optional(),
   first_name: Joi.string().optional(),
   last_name: Joi.string().optional(),

@@ -17,8 +17,23 @@ exports.signUp = async (req, res, next) => {
     let refCodeSuffix = Date.now().toString(36) + Math.random().toString(36).substring(2)
     let password;
     const email = req.body.email && req.body.email.toLowerCase();
+    const username = req.body.username;
     // check if usr exists
     const isUser = await new AuthService().findARecord({ email }, TYPE.LOGIN);
+    const usernameExists = await new AuthService().findARecord({ username }, TYPE.LOGIN);
+    if(usernameExists && usernameExists.username === req.body.username){
+      return next(
+        createError(HTTP.BAD_REQUEST, [
+          {
+            status: RESPONSE.ERROR,
+            message: "Username Taken",
+            statusCode: HTTP.BAD_REQUEST,
+            data: {},
+            code: HTTP.BAD_REQUEST,
+          },
+        ])
+      );
+    }
     const phoneNumberExists = await new AuthService().findARecord(
       { phone_number: req.body.phone_number },
       TYPE.LOGIN
@@ -49,10 +64,6 @@ exports.signUp = async (req, res, next) => {
         ])
       );
     } else {
-      // generate Username of 5 caharacters max
-      
-      let longUsername = email.split("@")[0];
-      const username = `@${longUsername}`
       // hash passwords and generate token
       if (req.body.password) {
         password = hashPassword(req.body.password);
@@ -68,12 +79,12 @@ exports.signUp = async (req, res, next) => {
         var arr = [chunks.shift(), chunks.join(" ")];
         req.body.first_name = arr[0];
         req.body.last_name = arr[1];
-        req.body.username = arr[0];
+        username = arr[0];
       }
 
       // send data to user service for storage via http
       const dataToUserService = {
-        username: username,
+        username,
         phone_number: req.body.phone_number,
         imei: req.body.imei || " ",
         email: email,
