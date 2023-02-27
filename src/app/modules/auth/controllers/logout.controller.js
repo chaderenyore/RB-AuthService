@@ -89,12 +89,12 @@ exports.logOut = async (req, res, next) => {
         login_duration:  now - session.logged_in_time
       }
       const accessLogs = await new AccessLogService().updateLogs({session_id: req.body.session_id}, logsData);
-      await new AuthService().updateARecord ({email: req.body.email} ,{is_loggedIn: false}, TYPE.LOGIN);
+      const loginRecord = await new AuthService().updateARecord ({email: req.body.email} ,{is_loggedIn: false}, TYPE.LOGIN);
       const deactivatedToken = await new AuthService().updateARecord ({email: req.body.email }, {isActive: false}, TYPE.TOKEN);
       console.log("SESSION =========== :", accessLogs)
         const resdata = {
           session_id : accessLogs.session_id,
-          ...deactivatedToken
+          ...loginRecord
         }
           return createResponse("Looged Out", resdata)(res, HTTP.OK);
         }
