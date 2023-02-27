@@ -30,13 +30,13 @@ exports.verifyUserAccount = async (req, res, next) => {
 
       if (token !== req.body.token) {
         return next(
-            createError(HTTP.BAD_REQUEST, [
+            createError(HTTP.OK, [
               {
-                status: RESPONSE.ERROR,
+                status: RESPONSE.SUCCESS,
                 message: `Invalid Otp`,
-                statusCode: HTTP.BAD_REQUEST,
+                statusCode: HTTP.OK,
                 data: null,
-                code: HTTP.BAD_REQUEST,
+                code: HTTP.Ok,
               },
             ])
           );
