@@ -25,11 +25,11 @@ exports.signUp = async (req, res, next) => {
       return next(
         createError(HTTP.OK, [
           {
-            status: RESPONSE.SUCCESS,
+            status: RESPONSE.ERROR,
             message: "Username Taken",
-            statusCode: HTTP.OK,
+            statusCode: HTTP.BAD_REQUEST,
             data: {},
-            code: HTTP.OK,
+            code: HTTP.BAD_REQUEST,
           },
         ])
       );
@@ -41,25 +41,25 @@ exports.signUp = async (req, res, next) => {
      console.log("PhoneNumber ", phoneNumberExists)
     if (isUser) {
       return next(
-        createError(HTTP.OK, [
+        createError(HTTP.BAD_REQUEST, [
           {
-            status: RESPONSE.SUCCESS,
+            status: RESPONSE.ERROR,
             message: "User Exists",
-            statusCode: HTTP.OK,
+            statusCode: HTTP.BAD_REQUEST,
             data: {},
-            code: HTTP.OK,
+            code: HTTP.BAD_REQUEST,
           },
         ])
       );
     } else if (req.body.phone_number && phoneNumberExists) {
       return next(
-        createError(HTTP.OK, [
+        createError(HTTP.BAD_REQUEST, [
           {
-            status: RESPONSE.SUCCESS,
+            status: RESPONSE.ERROR,
             message: "phone Number In Use",
-            statusCode: HTTP.OK,
+            statusCode: HTTP.BAD_REQUEST,
             data: {},
-            code: HTTP.OK,
+            code: HTTP.BAD_REQUEST,
           },
         ])
       );

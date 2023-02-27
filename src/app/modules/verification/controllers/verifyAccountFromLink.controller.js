@@ -18,34 +18,50 @@ exports.verifyLinkCallback = async (req, res, next) => {
       const user_id = UserExist._id;
       console.log(jwtVerify(Token))
       console.log("USER ID", user_id)
-  const user = await new AuthService().updateARecord({user_id}, {is_verified: true}, TYPE.LOGIN);
-  if (!user) {
+
+      // search if user is verified
+  const isVerifed = await new AuthService().findARecord({user_id}, TYPE.LOGIN);
+  if(isVerifed && isVerifed.is_verified === true){
     return next(
       createError(HTTP.UNAUTHORIZED, [
         {
           status: RESPONSE.ERROR,
-          message: "UnAuthporized",
+          message: "Account ALready Verified",
           statusCode: HTTP.UNAUTHORIZED,
         },
       ])
-    );``
+    );
   } else {
-      // Send Account Verified successful mail
-      const Data = {
-        first_name: user.first_name ? user.first_name : user.username,
-        email: user.email,
-      };
-     const mail = await axios.post(
-        `${KEYS.NOTIFICATION_URI}/notifications/v1/user/welcome-mail`,
-        Data,
-        {
-          headers: {
-            Authorization: `Bearer ${req.token}`,
+    const user = await new AuthService().updateARecord({user_id}, {is_verified: true}, TYPE.LOGIN);
+    if (!user) {
+      return next(
+        createError(HTTP.UNAUTHORIZED, [
+          {
+            status: RESPONSE.ERROR,
+            message: "UnAuthporized",
+            statusCode: HTTP.UNAUTHORIZED,
           },
-        }
+        ])
       );
-    return createResponse("Account Verified Successfully", {})(res, HTTP.OK);
-    }
+    } else {
+        // Send Account Verified successful mail
+        const Data = {
+          first_name: user.first_name ? user.first_name : user.username,
+          email: user.email,
+        };
+       const mail = await axios.post(
+          `${KEYS.NOTIFICATION_URI}/notifications/v1/user/welcome-mail`,
+          Data,
+          {
+            headers: {
+              Authorization: `Bearer ${req.token}`,
+            },
+          }
+        );
+      return createResponse("Account Verified Successfully", {})(res, HTTP.OK);
+      }
+  }
+   
     
   }catch (err) {
         logger.error(err);
