@@ -1,7 +1,7 @@
 const loginRepository = require("../repository/login.repository");
 const SecurityRepository = require("../repository/login.repository");
 const TokenRepository = require("../repository/token.repository");
-// const { message } = require("../../../../_constants/service.message");
+const { message } = require("../../../../_constants/service.message");
 const { TYPE } = require("../../../../_constants/record.type");
 
 class AuthService {
@@ -18,7 +18,7 @@ class AuthService {
       ? this.SecurityRepository.create(data)
       : type === TYPE.TOKEN
       ? this.TokenRepository.create(data)
-      : message;
+      : message.INVALID_QUERY;
   }
 
   async findARecord(query, type) {
@@ -28,7 +28,7 @@ class AuthService {
       ? this.SecurityRepository.findOne(query)
       : type === TYPE.TOKEN
       ? this.TokenRepository.findOne(query)
-      : message;
+      : message.INVALID_QUERY;
   }
 
   async updateARecord(condition, update, type) {
@@ -38,7 +38,7 @@ class AuthService {
       ? this.SecurityRepository.update(condition, update)
       : type === TYPE.TOKEN
       ? this.TokenRepository.update(condition, update)
-      : message;
+      : message.INVALID_QUERY;
   }
 
   async GetAllRecords(limit, page, data, selectedFields, type) {
@@ -48,7 +48,7 @@ class AuthService {
       ? this.SecurityRepository.all(limit, page, data, selectedFields)
       : type === TYPE.TOKEN
       ? this.TokenRepository.all(limit, page, data, selectedFields)
-      : message;
+      : message.INVALID_QUERY;
   }
 
   async findRecordById(id, type) {
@@ -58,7 +58,7 @@ class AuthService {
       ? this.SecurityRepository.findById(id)
       : type === TYPE.TOKEN
       ? this.TokenRepository.findById(id)
-      : message;
+      : message.INVALID_QUERY;
   }
 
   async deletAll(type) {
@@ -68,7 +68,7 @@ class AuthService {
       ? this.SecurityRepository.delete({})
       : type === TYPE.TOKEN
       ? this.TokenRepository.delete({})
-      : message;
+      : message.INVALID_QUERY;
   }
 
   async deletOne (type, condition) {
@@ -77,7 +77,7 @@ class AuthService {
       : type === TYPE.SECURITY
           ? this.SecurityRepository.delete(condition)
           :  type === TYPE.TOKEN
-          ? this.TokenRepository.delete(condition) : message;
+          ? this.TokenRepository.delete(condition) : message.INVALID_QUERY;
   }
 }
 

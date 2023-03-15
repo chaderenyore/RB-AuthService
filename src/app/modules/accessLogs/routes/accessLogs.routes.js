@@ -10,19 +10,32 @@ const getAllAccessLogsController = require("../controllers/getAllAccessLogs.cont
 const router = Router();
 
 router.get(
-  "/",
-  authorizeAdmin(["super","admin", "reviewer", "editor"]),
+  "/my-logs",
+  authorize(["user", "org"]),
   validateRequest(getAllAccessLogsSchema.getAllUsersAccessLogsSchema, "body"),
   getAllAccessLogsController.getAllAccesLogs
 );
 
 router.get(
-  "/user-logs",
-  authorizeAdmin(["super","admin", "reviewer", "editor"]),
-  validateRequest(getUsersAccessLogsSchema.getAllUsersAccessLogsSchema, "query"),
-  getUsersAccessLogsController.getAllAccesLogs
+  "/admin/all",
+  authorizeAdmin(["super", "admin", "account-view", "account-edit"]),
+  validateRequest(getAllAccessLogsSchema.getAllUsersAccessLogsSchema, "body"),
+  getAllAccessLogsController.getAllAccesLogs
 );
 
-
+router.get(
+  "/admin",
+  authorizeAdmin([
+    "super",
+    "admin",
+    "account-view",
+    "account-edit",
+  ]),
+  validateRequest(
+    getUsersAccessLogsSchema.getAllUsersAccessLogsSchema,
+    "query"
+  ),
+  getUsersAccessLogsController.getAllAccesLogs
+);
 
 module.exports = router;
