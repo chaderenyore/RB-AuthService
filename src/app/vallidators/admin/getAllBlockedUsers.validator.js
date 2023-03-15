@@ -1,7 +1,6 @@
 const Joi = require("joi");
 
-exports.getAllUsersAccessLogsSchema = Joi.object({
+exports.getAllBlockedUsersSchema = Joi.object({
     page: Joi.number().positive().optional(),
     limit: Joi.number().positive().optional(),
-    user_id: Joi.string().required()
   });

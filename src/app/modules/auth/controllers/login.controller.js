@@ -34,7 +34,19 @@ exports.login = async (req, res, next) => {
         ])
       );
     }
-
+    if (user && user.is_blocked === true) {
+      return next(
+        createError(HTTP.UNAUTHORIZED, [
+          {
+            status: RESPONSE.ERROR,
+            message: "You Have Been Blocked From The System, contact support",
+            statusCode: HTTP.SERVER_ERROR,
+            data: null,
+            code: HTTP.UNAUTHORIZED,
+          },
+        ])
+      );
+    }
     if (user && user.user_type !== req.body.user_type) {
       return next(
         createError(HTTP.UNAUTHORIZED, [
@@ -48,7 +60,6 @@ exports.login = async (req, res, next) => {
         ])
       );
     }
-
     if (user && user.is_verified === false) {
       return next(
         createError(HTTP.UNAUTHORIZED, [
