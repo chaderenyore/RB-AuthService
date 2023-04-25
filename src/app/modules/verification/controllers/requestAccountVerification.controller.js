@@ -68,7 +68,7 @@ exports.requestAccountVerification = async (req, res, next) => {
           first_name: user.first_name ? user.first_name : user.username,
           email: user.email,
           token: token,
-          link:`${KEYS.BASE_URL}/auth/v1/account/verify-link?token=${req.token}&platform=web`
+          link:`${KEYS.BASE_URL}/auth/v1/account/verify-link?token=${req.token}&platform=web&login_page=${req.query.login_page}&to_verify=true&resend_link_page=${req.query.resend_link_page}`
         };
         const mail = await axios.post(
           `${KEYS.NOTIFICATION_URI}/notifications/v1/user/request-account-verification`,

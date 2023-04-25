@@ -25,7 +25,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(compression());
 app.use(morgan("dev"));
 app.use(requestLogger)
-
+// View engine setup
+app.set('views', './src/_assets/templates');
+app.set('view engine', 'ejs');
 app.use(function (_err, _req, _res, _) {
 
 
