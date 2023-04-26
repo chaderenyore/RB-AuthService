@@ -8,4 +8,4 @@ sudo PM2_HOME=/home/ubuntu/services/.pm2 pm2 list
 cd /home/ubuntu/services/Auth
 # pm2 delete 
 # pm2 --name 
-pm2 restart AuthService
+pm2 restart AUTH-SERVICE
