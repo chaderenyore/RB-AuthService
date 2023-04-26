@@ -14,6 +14,7 @@ router.post(
   "/request-verification",
   authorize(['user','org']),
   validateRequest(RequestVerification.requestAccountVerificationSchema, "body"),
+  validateRequest(RequestVerification.requestAccountVerificationQuerySchema, "query"),
   RequestVerificationController.requestAccountVerification
 );
 
