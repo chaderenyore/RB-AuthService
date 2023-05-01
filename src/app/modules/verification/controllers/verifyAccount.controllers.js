@@ -12,7 +12,6 @@ const { redisGetAsync } = require("../../../../_helpers/promisifyRedis");
 
 exports.verifyUserAccount = async (req, res, next) => {
     try {
-
             // search if user is verified
   const isVerifed = await new AuthService().findARecord({user_id: req.user.user_id}, TYPE.LOGIN);
   if(isVerifed && isVerifed.is_verified === true){

@@ -6,11 +6,12 @@ const { TYPE } = require("../../../../_constants/record.type");
 const createError = require("../../../../_helpers/createError");
 const { CHANNELS } = require("../../../../_constants/channels");
 const { generateTokenAndStore } = require("../../../../_helpers/generateOtp");
+const { jwtSign, jwtDecode } = require("../../../../_helpers/jwtUtil");
 const { createResponse } = require("../../../../_helpers/createResponse");
 const AuthService = require("../../auth/services/auth.services");
 const logger = require("../../../../../logger.conf");
 
-exports.requestAccountVerification = async (req, res, next) => {
+exports.resendVerification = async (req, res, next) => {
   try {
     let user = null;
     switch (req.body.channel) {
@@ -57,37 +58,35 @@ exports.requestAccountVerification = async (req, res, next) => {
             },
           ])
         );
-      }
-      const UserId = user.user_id;
-      const token = String(generateTokenAndStore(UserId));
-      console.log("OTP ============== ", token)
-      // call notification service based on channel and user
-      if (req.body.channel === "email" || req.body.channel === "phone_number") {
-        // send mail or publish to queue TODO:::
-        const Data = {
-          first_name: user.first_name ? user.first_name : user.username,
-          email: user.email,
-          token: token,
-          link:`${KEYS.BASE_URL}/auth/v1/account/verify-link?token=${req.token}&platform=web&login_page=${req.query.login_page}&to_verify=true&resend_link_page=${req.query.resend_link_page}`
-        };
-        const mail = await axios.post(
-          `${KEYS.NOTIFICATION_URI}/notifications/v1/user/request-account-verification`,
-          Data,
-          {
-            headers: {
-              Authorization: `Bearer ${req.token}`,
-            },
-          }
-        );
-        // Publish to Account verification queue TODO
-        const resData = {
-          channel: req.body.channel,
-          channel_value: req.body.channel_value,
-        };
-        return createResponse(`A mail has been sent to ${user.email}`, resData)(
-          res,
-          HTTP.OK
-        );
+      } else {
+        const UserId = user.user_id;
+      
+        const otp = String(generateTokenAndStore(UserId));
+        const token = jwtSign(UserId);
+        console.log("OTP ============== ", token)
+        // call notification service based on channel and user
+        if (req.body.channel === "email" || req.body.channel === "phone_number") {
+          // send mail or publish to queue TODO:::
+          const Data = {
+            first_name: user.first_name ? user.first_name : user.username,
+            email: user.email,
+            token: otp,
+            link:`${KEYS.BASE_URL}/auth/v1/account/verify-link?token=${token}&platform=web&login_page=${req.query.login_page}&to_verify=true&resend_link_page=${req.query.resend_link_page}`
+          };
+          const mail = await axios.post(
+            `${KEYS.NOTIFICATION_URI}/notifications/v1/user/request-account-verification`,
+            Data
+          );
+          // Publish to Account verification queue TODO
+          const resData = {
+            channel: req.body.channel,
+            channel_value: req.body.channel_value,
+          };
+          return createResponse(`A mail has been sent to ${user.email}`, resData)(
+            res,
+            HTTP.OK
+          );
+        }
       }
     }
   } catch (err) {

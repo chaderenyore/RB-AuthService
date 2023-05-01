@@ -15,6 +15,7 @@ const router = Router();
 router.post(
   "/register",
   validateRequest(signUpSchema.registerUserSchema, "body"),
+  validateRequest(signUpSchema.signupQuerySchema, "query"),
   signUpController.signUp
 );
 

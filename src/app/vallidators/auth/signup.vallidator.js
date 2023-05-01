@@ -31,3 +31,8 @@ exports.registerUserSchema = Joi.object().keys({
   access_token: Joi.string().optional(),
   user_type: Joi.string().trim().valid("user", "org").required(),
 });
+
+exports.signupQuerySchema = Joi.object({
+  login_page: Joi.string().required(),
+  resend_link_page: Joi.string().required()
+});
