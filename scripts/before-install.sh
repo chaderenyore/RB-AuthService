@@ -6,4 +6,5 @@ export NVM_DIR="$HOME/.nvm"
 
 cd /home/ubuntu/services/Auth
 rm -rf package-lock.json
+npm install @aws-sdk/client-s3 --save
 npm install
