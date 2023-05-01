@@ -11,11 +11,10 @@ const VerifyLinkController = require("../controllers/verifyAccountFromLink.contr
 
 const router = Router();
 router.post(
-  "/request-verification",
-  authorize(['user','org']),
+  "/resend-verification",
   validateRequest(RequestVerification.requestAccountVerificationSchema, "body"),
   validateRequest(RequestVerification.requestAccountVerificationQuerySchema, "query"),
-  RequestVerificationController.requestAccountVerification
+  RequestVerificationController.resendVerification
 );
 
 router.post(

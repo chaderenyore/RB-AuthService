@@ -28,7 +28,7 @@ exports.login = async (req, res, next) => {
             status: RESPONSE.ERROR,
             message: "User Does Not Exist",
             statusCode: HTTP.SERVER_ERROR,
-            data: null,
+            data: user,
             code: HTTP.UNAUTHORIZED,
           },
         ])
@@ -41,7 +41,7 @@ exports.login = async (req, res, next) => {
             status: RESPONSE.ERROR,
             message: "You Have Been Blocked From The System, contact support",
             statusCode: HTTP.SERVER_ERROR,
-            data: null,
+            data: {},
             code: HTTP.UNAUTHORIZED,
           },
         ])
@@ -67,7 +67,7 @@ exports.login = async (req, res, next) => {
             status: RESPONSE.ERROR,
             message: "Your Account Has Not Been Verified",
             statusCode: HTTP.SERVER_ERROR,
-            data: null,
+            data: user,
             code: HTTP.UNAUTHORIZED,
           },
         ])

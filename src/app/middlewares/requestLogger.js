@@ -30,7 +30,7 @@ exports.requestLogger = async (req, res, next) => {
     req.platform = req.query.platform;
     next();
   } catch (err) {
-    console.log(err?.response?.data || err);
+    console.log(err.response.data || err);
     next();
   }
 };

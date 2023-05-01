@@ -9,6 +9,7 @@ const { createResponse } = require("../../../../_helpers/createResponse");
 const { hashPassword } = require("../../../../_helpers/passwordHash");
 const AuthService = require("../services/auth.services");
 const CreateUserPublisher = require('../../../../_queue/publishers/createUser.publisher');
+const { generateTokenAndStore } = require("../../../../_helpers/generateOtp");
 
 const logger = require("../../../../../logger.conf");
 
@@ -28,17 +29,12 @@ exports.signUp = async (req, res, next) => {
             status: RESPONSE.SUCCESS,
             message: "Username Taken",
             statusCode: HTTP.OK,
-            data: {},
+            data: usernameExists,
             code: HTTP.OK,
           },
         ])
       );
     }
-    const phoneNumberExists = await new AuthService().findARecord(
-      { phone_number: req.body.phone_number },
-      TYPE.LOGIN
-    );
-     console.log("PhoneNumber ", phoneNumberExists)
     if (isUser) {
       return next(
         createError(HTTP.OK, [
@@ -46,7 +42,7 @@ exports.signUp = async (req, res, next) => {
             status: RESPONSE.SUCCESS,
             message: "User Exists",
             statusCode: HTTP.OK,
-            data: {},
+            data: isUser,
             code: HTTP.OK,
           },
         ])
@@ -58,7 +54,7 @@ exports.signUp = async (req, res, next) => {
             status: RESPONSE.SUCCESS,
             message: "phone Number In Use",
             statusCode: HTTP.OK,
-            data: {},
+            data: phoneNumberExists,
             code: HTTP.OK,
           },
         ])
@@ -95,19 +91,19 @@ exports.signUp = async (req, res, next) => {
         auth_type: req.body.auth_type || "lc",
         user_type: req.body.user_type,
       };
-      console.log(">>>>>> dataToUserService", dataToUserService); 
       const user = await axios.post(
         `${KEYS.USER_SERVICE_URI}/users/v1/create?platform=web`,
         dataToUserService
       );
       // console.log("USER ================== ", user)
-      console.log("USER ================== ", user.data)
-      console.log("USER ================== ", user.data.data)
-      console.log("USER ================== ", user.data.data._id)
       if(user && user.data && user.data.code === 200){     
         let user_id = user.data.data._id;
+        // genearate otp
+        const otp = String(generateTokenAndStore(user_id));
         // sign jwt
         const token = jwtSign(user_id);
+        const decodeToken = jwtDecode(token);
+        console.log("DECODED TOKEN ========= ", decodeToken);
         console.log("NEW SIGNED TOKEN ================= ". token)
         const { iat } = jwtDecode(token) || {};
         // create login record
@@ -146,8 +142,18 @@ exports.signUp = async (req, res, next) => {
                 { ...tokenData },
                 TYPE.TOKEN
               );
-              console.log("token:   ============ ", tokenRecord)
-              return createResponse("User Created", resData)(res, HTTP.CREATED);
+        // send request account verification mail
+        const Data = {
+          first_name: username,
+          email: email,
+          token: otp,
+          link:`${KEYS.BASE_URL}/auth/v1/account/verify-link?token=${token}&platform=web&login_page=${req.query.login_page}&to_verify=true&resend_link_page=${req.query.resend_link_page}`
+        };
+        const mail = await axios.post(
+          `${KEYS.NOTIFICATION_URI}/notifications/v1/user/request-account-verification`,
+          Data
+        );
+              return createResponse(`User Created and verification mail sent to ${email}`, resData)(res, HTTP.CREATED);
       } else{
         return next(
           createError(HTTP.BAD_REQUEST, [
