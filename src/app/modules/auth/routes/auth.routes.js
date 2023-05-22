@@ -27,6 +27,7 @@ router.post(
 
 router.post(
   "/logout",
+  authorize(['user','org']),
   validateRequest(logOutSchema.logoutSchema, "body"),
   logOutController.logOut
 );

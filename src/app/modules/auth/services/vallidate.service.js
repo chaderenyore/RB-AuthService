@@ -1,5 +1,6 @@
 const loginRepository = require ('../repository/login.repository');
 const TokenRepository = require ('../repository/token.repository');
+const SessionLogs = require("../../accessLogs/services/accessLogs.services")
 const { jwtVerify } = require("../../../../_helpers/jwtUtil");
 
 
@@ -10,28 +11,28 @@ class VallidateService {
   }
 
   async vallidateToken (data, token) {
-
-    // console.log("DATA FROM REQ ==================", data);
-    // console.log("Token Record ==================", tokenRecord);
-    console.log("Equal Token ==================", data.access_token === token);
-    console.log("Equal Token ==================", data);
-
-
-    if (data.access_token !== token || data.is_loggedIn === false ) {
+    // check if token session is still active
+   const session = await new SessionLogs().findAUserLogs({session_token: token});
+   if(!session){
+    return {
+      error: false,
+      message: "InValid Token",
+      data: data,
+    };
+   }
+   else if (session. is_active === false ) {
       return {
         error: true,
-        message: "You have logged out or invalid token",
+        message: "You have logged out From this Session",
         data: null,
       };
-    }
-    else{
+    } else{
       return {
         error: false,
         message: "Token Valid",
         data: data,
       };
     }
-
 
   }
 }
