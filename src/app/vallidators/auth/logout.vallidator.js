@@ -5,4 +5,3 @@ exports.logoutSchema = Joi.object({
   email: Joi.string().email().trim().required(),
   session_id: Joi.string().required()
   });
-  

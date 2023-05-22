@@ -19,7 +19,7 @@ class Repository {
 
   findOne (condition = {}) {
     return this.Model.findOne (
-      condition).select('-password');
+      condition);
   }
 
   all (limit, page, data, selectedFields) {

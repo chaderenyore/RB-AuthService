@@ -11,7 +11,6 @@ const {
 } = require("../../../../_helpers/jwtUtil");
 const AuthService = require("../services/auth.services");
 const AccessLogsService = require("../../accessLogs/services/accessLogs.services");
-const { rollback } = require("../../../../_helpers/rollbackSave");
 const logger = require("../../../../../logger.conf");
 exports.login = async (req, res, next) => {
   try {
@@ -20,7 +19,6 @@ exports.login = async (req, res, next) => {
       { email: req.body.email },
       TYPE.LOGIN
     );
-    console.log("USER =================== ", user)
     if (!user) {
       return next(
         createError(HTTP.UNAUTHORIZED, [
@@ -107,7 +105,6 @@ exports.login = async (req, res, next) => {
         ])
       );
     }
-    logger.debug("USER ============= :", user.user_id);
     const user_id = user.user_id;
     const accessToken = jwtSign(user_id);
 
@@ -126,12 +123,16 @@ exports.login = async (req, res, next) => {
     // generate session id
     const now = Date.now();
     const stringTime = `${req.body.email}-${now}`;
-    console.log(now.toString());
-    const session_id = jwtSignAccessLogsData(stringTime);
+    const session = {
+      loggedInTime: now,
+      user_id: user.user_id,
+    };
+    const session_id = jwtSignAccessLogsData(session);
     // push login time to access logs
     // data to access logs
     let logsData = {
       session_id,
+      session_token: accessToken,
       user_id: String(user.user_id),
       email: String(user.email),
       is_active: true,
@@ -150,6 +151,7 @@ exports.login = async (req, res, next) => {
     return createResponse("User Logged In", resData)(res, HTTP.OK);
   } catch (err) {
     logger.error(err);
+    console.log(err)
     return next(createError.InternalServerError(err));
   }
 };
