@@ -1,10 +1,11 @@
+const axios = require("axios");
 const { HTTP } = require("../../../../_constants/http");
 const { RESPONSE } = require("../../../../_constants/response");
 const { TYPE } = require("../../../../_constants/record.type");
 const createError = require("../../../../_helpers/createError");
 const { createResponse } = require("../../../../_helpers/createResponse");
 const AuthService = require("../../auth/services/auth.services");
-
+const BlockUnblockQueue = require("../../../../_queue/publishers/blockUnblockUser.publisher");
 const logger = require("../../../../../logger.conf");
 
 exports.blockUser = async (req, res, next) => {
@@ -19,7 +20,6 @@ exports.blockUser = async (req, res, next) => {
     for (let i = 0; i < user_ids.length; i++) {
       console.log("IDS ============ ", user_ids[i]);
       const user = await new AuthService().findARecord({user_id: user_ids[i]}, TYPE.LOGIN);
-       console.log("USER ========= ", user);
       if(!user){
         return next(
           createError(HTTP.OK, [
@@ -48,10 +48,15 @@ exports.blockUser = async (req, res, next) => {
         } else {
           const blockedUser = await new AuthService().updateARecord({user_id: user_ids[i]}, updateData, TYPE.LOGIN);
         blockedUsers.push(blockedUser);
-
+    // publish to following and follower queues TODO
+    const publishToBlockUserQueue = await BlockUnblockQueue.publishToBlockUnblockUserQueue(
+      user_ids[i],
+      updateData
+    );
         }
       }
     }
+    // update User record In user service
     return createResponse(`User(s) Blocked`, blockedUsers)(res, HTTP.OK);
   } catch (err) {
     console.error(err);

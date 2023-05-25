@@ -5,7 +5,7 @@ const validateRequest = require("../../../middlewares/vallidate");
 
 // validators
 const getUsersAccessLogsSchema = require("../../../vallidators/accessLogs/getUsersAccessLogs.validator");
-const getAllAccessLogsSchema = require("../../../vallidators/accessLogs/getUsersAccessLogs.validator");
+const getAllAccessLogsSchema = require("../../../vallidators/accessLogs/getAllAccessLogs.validator");
 const logoutSessionSchema = require("../../../vallidators/accessLogs/logOutSession.validator");
 
 
@@ -25,9 +25,9 @@ router.get(
 );
 
 router.get(
-  "/admin/all",
+  "/all-userlogs",
   authorizeAdmin(["super", "admin", "account-view", "account-edit"]),
-  validateRequest(getAllAccessLogsSchema.getAllUsersAccessLogsSchema, "body"),
+  validateRequest(getAllAccessLogsSchema.getAllAccessLogsSchema, "query"),
   getAllAccessLogsController.getAllAccesLogs
 );
 

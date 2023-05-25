@@ -11,6 +11,9 @@ const AuthService = require("../services/auth.services");
 const CreateUserPublisher = require('../../../../_queue/publishers/createUser.publisher');
 const { generateTokenAndStore } = require("../../../../_helpers/generateOtp");
 
+const InviteCodeService = require("../../inviteCodes/services/inviteCode.services");
+const { generateRandomChar } = require("../../../../_helpers/inviteCode/generateRandomChar");
+const { calculateAge } = require("../../../../_helpers/inviteCode/ageCalculator");
 const logger = require("../../../../../logger.conf");
 
 exports.signUp = async (req, res, next) => {
@@ -77,13 +80,15 @@ exports.signUp = async (req, res, next) => {
         req.body.last_name = arr[1];
         username = arr[0];
       }
-
+  // generate Invite Code
+  const invite_code = await generateRandomChar(Math.floor(Math.random() * 10));
       // send data to user service for storage via http
       const dataToUserService = {
         username,
         phone_number: req.body.phone_number,
         imei: req.body.imei || " ",
         email: email,
+        invite_code,
         referral_code: `${refCodeSuffix}`,
         first_name: req.body.first_name || " ",
         last_name: req.body.last_name || " ",
@@ -103,8 +108,6 @@ exports.signUp = async (req, res, next) => {
         // sign jwt
         const token = jwtSign(user_id);
         const decodeToken = jwtDecode(token);
-        console.log("DECODED TOKEN ========= ", decodeToken);
-        console.log("NEW SIGNED TOKEN ================= ". token)
         const { iat } = jwtDecode(token) || {};
         // create login record
         const loginData = {
@@ -119,14 +122,13 @@ exports.signUp = async (req, res, next) => {
           access_token: token,
           password,
           device_imei: req.body.imei,
+          invite_code,
         };
         logger.log(loginData);
         const loginRecord = await new AuthService().createRecord(
           loginData,
           TYPE.LOGIN
         );
-        logger.debug(" LOGIN_RECORD USERID" + loginRecord.user_id);
-        logger.debug("LOGIN RECORD:  " + loginRecord);
               // create security record and a token record
               const resData = {
                 ...loginRecord._doc,
@@ -153,6 +155,8 @@ exports.signUp = async (req, res, next) => {
           `${KEYS.NOTIFICATION_URI}/notifications/v1/user/request-account-verification`,
           Data
         );
+      // save Users Invite Code: todo
+      
               return createResponse(`User Created and verification mail sent to ${email}`, resData)(res, HTTP.CREATED);
       } else{
         return next(
