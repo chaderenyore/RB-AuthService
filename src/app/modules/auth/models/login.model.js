@@ -16,7 +16,8 @@ const schema = mongoose.Schema(
     can_post: {type: Boolean, default: true},
     is_blocked: { type: Boolean, default: false},
     is_verified: { type: Boolean, default: false},
-    access_token:{type: String}
+    access_token:{type: String},
+    invite_code:{type: String}
   },
   {
     timestamps: { createdAt: "created_at", updatedAt: "updated_at" },

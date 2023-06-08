@@ -4,6 +4,7 @@ const { TYPE } = require("../../../../_constants/record.type");
 const createError = require("../../../../_helpers/createError");
 const { createResponse } = require("../../../../_helpers/createResponse");
 const AuthService = require("../../auth/services/auth.services");
+const BlockUnblockQueue = require("../../../../_queue/publishers/blockUnblockUser.publisher");
 
 const logger = require("../../../../../logger.conf");
 
@@ -53,6 +54,10 @@ exports.unBlockUser = async (req, res, next) => {
             TYPE.LOGIN
           );
           unBlockedUsers.push(blockedUser);
+          const publishToBlockUserQueue = await BlockUnblockQueue.publishToBlockUnblockUserQueue(
+            user_ids[i],
+            updateData
+          );
         }
       }
     }
