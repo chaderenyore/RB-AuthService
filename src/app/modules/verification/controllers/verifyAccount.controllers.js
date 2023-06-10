@@ -7,6 +7,7 @@ const createError = require('../../../../_helpers/createError');
 const { CHANNELS } = require('../../../../_constants/channels');
 const { createResponse } = require('../../../../_helpers/createResponse');
 const AuthService = require("../../auth/services/auth.services");
+const VerfiyUserPublisher = require("../../../../_queue/publishers/verifyUser.publisher");
 const logger = require("../../../../../logger.conf");
 const { redisGetAsync } = require("../../../../_helpers/promisifyRedis");
 
@@ -25,7 +26,6 @@ exports.verifyUserAccount = async (req, res, next) => {
       ])
     );
   } else {
-    console.log("USER_ID : ", req.user)
     const token = await redisGetAsync(req.user.user_id);
     if (!token) {
       return next(
@@ -82,6 +82,8 @@ exports.verifyUserAccount = async (req, res, next) => {
         },
       }
     );
+    // publish to verfiy user queue
+    const puiblishedMessage = await VerfiyUserPublisher.publishToVerifyUserQueue(req.user.user_id, {is_verified: true});
   return createResponse("Account Verified Successfully", {})(res, HTTP.OK);
   }
  

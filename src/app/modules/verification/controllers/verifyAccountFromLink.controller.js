@@ -9,6 +9,7 @@ const { TYPE } = require("../../../../_constants/record.type");
 const createError = require("../../../../_helpers/createError");
 const { createResponse } = require("../../../../_helpers/createResponse");
 const AuthService = require("../../auth/services/auth.services");
+const VerfiyUserPublisher = require("../../../../_queue/publishers/verifyUser.publisher");
 const logger = require("../../../../../logger.conf");
 const { jwtVerify } = require("../../../../_helpers/jwtUtil");
 
@@ -49,8 +50,6 @@ exports.verifyLinkCallback = async (req, res, next) => {
       TYPE.LOGIN
     );
     if (isVerifed && isVerifed.is_verified === true) {
-      console.log("URL  ======= ", req.url);
-      console.log("Query  ======= ", req.query);
       return res.render("verified", successData);
     } else {
       const user = await new AuthService().updateARecord(
@@ -75,6 +74,8 @@ exports.verifyLinkCallback = async (req, res, next) => {
             },
           }
         );
+        // publish to user queue
+        const puiblishedMessage = await VerfiyUserPublisher.publishToVerifyUserQueue(req.user.user_id, {is_verified: true});
         // Send Account Verified Successful mail
         return res.render("success", successData);
       }
