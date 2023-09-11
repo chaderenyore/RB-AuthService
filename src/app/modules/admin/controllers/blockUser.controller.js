@@ -17,9 +17,11 @@ exports.blockUser = async (req, res, next) => {
     // get the array of ids from the body
     const { user_ids } = req.body;
     console.log(user_ids);
+    console.log(user_ids.length);
     for (let i = 0; i < user_ids.length; i++) {
-      console.log("IDS ============ ", user_ids[i]);
       const user = await new AuthService().findARecord({user_id: user_ids[i]}, TYPE.LOGIN);
+      console.log("USER " , user)
+      console.log("USER ID " , String(user_ids[i]))
       if(!user){
         return next(
           createError(HTTP.OK, [
