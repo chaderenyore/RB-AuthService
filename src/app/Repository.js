@@ -18,7 +18,7 @@ class Repository {
   }
 
   findOne (condition = {}) {
-    return this.Model.findOne (
+    return this.Model.findOne(
       condition);
   }
 

@@ -1,13 +1,13 @@
-const { Connnection } = require("../../index");
+const { Connnection } = require("../index");
 const KEYS = require("../../_config/keys");
 
 exports.publishToBlockUnblockUserQueue = async (id, data) => {
   try {
     let BlockUnblockUserPublisher = new Connnection(
       KEYS.AMQP_URI,
-      KEYS.IN_APP_NOTIFICATION_QUEUE,
+      KEYS.BLOCK_UNBLOCK_USER_QUEUE,
       async (msg) => {
-        console.log(`${KEYS.IN_APP_NOTIFICATION_QUEUE} publishing...`);
+        console.log(`${KEYS.BLOCK_UNBLOCK_USER_QUEUE} publishing...`);
       }
     );
     const channel = await BlockUnblockUserPublisher.getChannel();
