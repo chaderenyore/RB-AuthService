@@ -15,7 +15,8 @@ const KEYS = {
   BLOCK_UNBLOCK_USER_QUEUE: process.env.BLOCK_UNBLOCK_USER_QUEUE,
   VERIFY_USER_QUEUE: process.env.VERIFY_USER_QUEUE,
   USER_SERVICE_URI: process.env.USER_SERVICE_URI,
-  BASE_URL: process.env.BASE_URL
+  BASE_URL: process.env.BASE_URL,
+  SENDFOX_APIKEY: process.env.SENDFOX_APIKEY
 };
 
 module.exports = KEYS;

@@ -68,11 +68,13 @@ exports.verifyUserAccount = async (req, res, next) => {
         break;
     }
 
-    // Send Account Verified successful mail
+    // Construct User Data
     const Data = {
       first_name: user.first_name ? user.first_name : user.username,
       email: user.email,
     };
+
+    // Send Account Verified successful mail
    const mail = await axios.post(
       `${KEYS.NOTIFICATION_URI}/notifications/v1/user/welcome-mail`,
       Data,
@@ -82,6 +84,21 @@ exports.verifyUserAccount = async (req, res, next) => {
         },
       }
     );
+    
+    // Add user to promotional list
+    axios.post(
+      `https://api.sendfox.com/contacts`,
+      {
+        ...Data,
+        lists: ['447569']
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${KEYS.SENDFOX_APIKEY}`,
+        },
+      }
+    );
+
     // publish to verfiy user queue
     const puiblishedMessage = await VerfiyUserPublisher.publishToVerifyUserQueue(req.user.user_id, {is_verified: true});
   return createResponse("Account Verified Successfully", {})(res, HTTP.OK);
