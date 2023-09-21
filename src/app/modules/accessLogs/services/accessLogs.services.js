@@ -18,7 +18,7 @@ class AccessLogsService {
 
   }
   async deleteAllLogs(condition) {
-    return this.AccessLogsRepository.deleteMany (condition)
+    return this.AccessLogsRepository.delete(condition)
 
   }
 

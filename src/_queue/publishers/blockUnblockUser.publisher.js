@@ -1,7 +1,7 @@
 const { Connnection } = require("../index");
 const KEYS = require("../../_config/keys");
 
-exports.publishToBlockUnblockUserQueue = async (id, data) => {
+exports.publishToBlockUnblockUserQueue = async (data) => {
   try {
     let BlockUnblockUserPublisher = new Connnection(
       KEYS.AMQP_URI,
@@ -11,7 +11,7 @@ exports.publishToBlockUnblockUserQueue = async (id, data) => {
       }
     );
     const channel = await BlockUnblockUserPublisher.getChannel();
-    await BlockUnblockUserPublisher.publish(id, data);
+    await BlockUnblockUserPublisher.publish("Auth", data);
     process.on('exit', (code) => {
       channel.close();
       console.log(`Closing ${channel} channel`);
