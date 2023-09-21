@@ -14,7 +14,7 @@ const schema = mongoose.Schema(
     platform: {type: String, enum: ["android", "ios", "web"]},
     is_loggedIn: { type: Boolean},
     can_post: {type: Boolean, default: true},
-    is_blocked: { type: Boolean, default: false},
+    is_blocked: { type: String, default: "false"},
     is_verified: { type: Boolean, default: false},
     access_token:{type: String},
     invite_code:{type: String}
