@@ -12,7 +12,7 @@ exports.unBlockUser = async (req, res, next) => {
   try {
     let unBlockedUsers = [];
     const updateData = {
-      is_blocked: false,
+      is_blocked: "false",
     };
     // get the array of ids from the body
     const { user_ids } = req.body;
@@ -35,7 +35,7 @@ exports.unBlockUser = async (req, res, next) => {
           ])
         );
       } else {
-        if (user.is_blocked === false) {
+        if (user.is_blocked === "false") {
           return next(
             createError(HTTP.OK, [
               {
@@ -55,8 +55,10 @@ exports.unBlockUser = async (req, res, next) => {
           );
           unBlockedUsers.push(blockedUser);
           const publishToBlockUserQueue = await BlockUnblockQueue.publishToBlockUnblockUserQueue(
-            user_ids[i],
-            updateData
+            {
+              id:  user_ids[i],
+              ...updateData
+            }
           );
         }
       }
